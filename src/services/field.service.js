@@ -125,14 +125,40 @@ class FieldService {
                 {
                     model: DetailField,
                     as: "detail_fields",
-                    order: [["createdAt", "DESC"]],
-                    limit: 1,
                     separate: true,
+                    limit: 1,
+                    order: [["createdAt", "DESC"]],
                 },
             ],
         });
 
-        return field;
+        if (!field) {
+            return null;
+        }
+
+        const data = field.toJSON();
+
+        data.detail_fields =
+            data.detail_fields.length > 0
+                ? data.detail_fields[0]
+                : {
+                      id: 0,
+                      field_id: "",
+                      n: 0,
+                      p: 0,
+                      k: 0,
+                      temperature: 0.0,
+                      moisture: 0.0,
+                      ph: 0.0,
+                      salinity: 0.0,
+                      conductivity: 0.0,
+                      water_level: 0.0,
+                      soil_health: 0.0,
+                      createdAt: "",
+                      updatedAt: "",
+                  };
+
+        return data;
     }
 
     async sendControlCommand(fieldId, userId, command) {
