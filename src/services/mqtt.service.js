@@ -4,32 +4,46 @@ const { DetailField, WateringHistory, History } = require("../models");
 const { sensorDataSchema, wateringStatusSchema } = require("../validations/mqtt.validation");
 const logger = require("../utils/logger");
 
-const OPTIMAL = {
-    ph: 6.2,
-    moisture: 67,
-    n: 40,
-    p: 15,
-    k: 180,
-    ec: 1.8,
+const WEIGHT = {
+    ph: 0.25,
+    moisture: 0.25,
+    n: 0.15,
+    p: 0.1,
+    k: 0.15,
+    ec: 0.1,
 };
 
 let mqttClient = null;
 
 class MqttService {
+    static score(value, min, max, tolerance) {
+        if (value >= min && value <= max) return 100;
+
+        if (value < min) {
+            const diff = min - value;
+            return Math.max(0, 100 - (diff / tolerance) * 100);
+        }
+
+        const diff = value - max;
+        return Math.max(0, 100 - (diff / tolerance) * 100);
+    }
+
     static calculateSoilHealth(sensorData) {
-        const { ph, moisture, n, p, k, conductivity } = sensorData;
+        const phScore = score(sensorData.ph, 5.8, 6.8, 1.0);
 
-        const phDiff = Math.abs(ph - OPTIMAL.ph) / OPTIMAL.ph;
-        const moistureDiff = Math.abs(moisture - OPTIMAL.moisture) / OPTIMAL.moisture;
-        const nDiff = Math.abs(n - OPTIMAL.n) / OPTIMAL.n;
-        const pDiff = Math.abs(p - OPTIMAL.p) / OPTIMAL.p;
-        const kDiff = Math.abs(k - OPTIMAL.k) / OPTIMAL.k;
-        const ecDiff = Math.abs(conductivity - OPTIMAL.ec) / OPTIMAL.ec;
+        const moistureScore = score(sensorData.moisture, 55, 70, 30);
 
-        const totalDiff = phDiff + moistureDiff + nDiff + pDiff + kDiff + ecDiff;
-        const soilHealth = Math.round((1 - totalDiff / 6) * 10000) / 100;
+        const nScore = score(sensorData.n, 30, 60, 30);
 
-        return Math.max(0, Math.min(100, soilHealth));
+        const pScore = score(sensorData.p, 10, 20, 10);
+
+        const kScore = score(sensorData.k, 150, 220, 80);
+
+        const ecScore = score(sensorData.conductivity, 1.2, 2.2, 1.0);
+
+        const soilHealth = phScore * WEIGHT.ph + moistureScore * WEIGHT.moisture + nScore * WEIGHT.n + pScore * WEIGHT.p + kScore * WEIGHT.k + ecScore * WEIGHT.ec;
+
+        return Math.round(soilHealth * 100) / 100;
     }
 
     connect() {
