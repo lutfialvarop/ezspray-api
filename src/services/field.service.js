@@ -49,7 +49,7 @@ class FieldService {
             attributes: ["id"],
         });
 
-        const machineIds = fields.map((field) => Field.id);
+        const machineIds = fields.map((field) => fields.id);
 
         if (machineIds.length === 0) {
             return [];
@@ -87,14 +87,22 @@ class FieldService {
                     where: {
                         user_id: userId,
                     },
-                    attributes: [],
+                    attributes: ["id", "name"],
                 },
             ],
             where: dateFilter,
             order: [["createdAt", "DESC"]],
         });
 
-        return history;
+        return history.map((item) => {
+            const data = item.toJSON();
+
+            data.field_name = data.field?.name ?? "";
+
+            delete data.field;
+
+            return data;
+        });
     }
 
     async createField(fieldId, userId) {
