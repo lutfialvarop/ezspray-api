@@ -92,7 +92,7 @@ class FieldController {
                 return response.error(res, "Terjadi kesalahan pada input", error.details);
             }
 
-            const result = await fieldService.sendControlCommand(value.field_id, value.user_id, "{'watering' = 'ON'}");
+            const result = await fieldService.sendControlCommand(value.field_id, value.user_id);
 
             return response.success(res, "Perintah kontrol berhasil dikirim", result);
         } catch (error) {

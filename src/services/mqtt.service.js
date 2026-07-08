@@ -29,17 +29,17 @@ class MqttService {
     }
 
     static calculateSoilHealth(sensorData) {
-        const phScore = score(sensorData.ph, 5.8, 6.8, 1.0);
+        const phScore = this.score(sensorData.ph, 5.8, 6.8, 1.0);
 
-        const moistureScore = score(sensorData.moisture, 55, 70, 30);
+        const moistureScore = this.score(sensorData.moisture, 55, 70, 30);
 
-        const nScore = score(sensorData.n, 30, 60, 30);
+        const nScore = this.score(sensorData.n, 30, 60, 30);
 
-        const pScore = score(sensorData.p, 10, 20, 10);
+        const pScore = this.score(sensorData.p, 10, 20, 10);
 
-        const kScore = score(sensorData.k, 150, 220, 80);
+        const kScore = this.score(sensorData.k, 150, 220, 80);
 
-        const ecScore = score(sensorData.conductivity, 1.2, 2.2, 1.0);
+        const ecScore = this.score(sensorData.conductivity, 1.2, 2.2, 1.0);
 
         const soilHealth = phScore * WEIGHT.ph + moistureScore * WEIGHT.moisture + nScore * WEIGHT.n + pScore * WEIGHT.p + kScore * WEIGHT.k + ecScore * WEIGHT.ec;
 

@@ -161,7 +161,7 @@ class FieldService {
         return data;
     }
 
-    async sendControlCommand(fieldId, userId, command) {
+    async sendControlCommand(fieldId, userId) {
         const field = await Field.findOne({
             where: {
                 id: fieldId,
@@ -174,7 +174,7 @@ class FieldService {
         }
 
         const topic = `ezspray/${fieldId}/control`;
-        mqttService.publish(topic, JSON.stringify(command));
+        mqttService.publish(topic, JSON.stringify({ watering: "ON" }));
 
         return {
             topic,
