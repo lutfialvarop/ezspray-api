@@ -106,21 +106,22 @@ class FieldService {
     }
 
     async createField(fieldId, userId) {
-        const existingField = await Field.findOne({
-            where: { id: fieldId },
-        });
+        const field = await Field.findByPk(fieldId);
 
-        if (existingField) {
-            throw new Error(`field_id "${fieldId}" sudah terdaftar pada sistem`);
+        if (!field) {
+            throw new Error(`Field "${fieldId}" tidak ditemukan`);
         }
 
-        const newField = await Field.create({
-            id: fieldId,
-            name: "Kebun C",
+        if (field.user_id !== null) {
+            throw new Error(`Field "${fieldId}" sudah terdaftar`);
+        }
+
+        await field.update({
             user_id: userId,
+            name: "Lahan",
         });
 
-        return newField;
+        return field;
     }
 
     async getFieldDetail(fieldId, userId) {
