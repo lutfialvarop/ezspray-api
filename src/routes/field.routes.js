@@ -13,10 +13,10 @@ const response = require("../utils/apiResponse");
 //         "Back-End EzSpray API is running",
 //     );
 // });
-router.get("/", fieldController.getAllFields);
-router.get("/history", fieldController.getWateringHistory);
+router.post("/", fieldController.getAllFields);
+router.post("/history", fieldController.getWateringHistory);
 router.post("/create", fieldController.createField);
-router.get("/detail/:field_id", fieldController.getFieldDetail);
+router.post("/detail/:field_id", fieldController.getFieldDetail);
 router.post("/control", fieldController.sendControlCommand);
 
 module.exports = router;

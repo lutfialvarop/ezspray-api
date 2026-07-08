@@ -77,7 +77,7 @@ class FieldService {
 
     async createField(fieldId, userId) {
         const existingField = await Field.findOne({
-            where: { field_id: fieldId },
+            where: { id: fieldId },
         });
 
         if (existingField) {
@@ -85,7 +85,8 @@ class FieldService {
         }
 
         const newField = await Field.create({
-            field_id: fieldId,
+            id: fieldId,
+            name: "Kebun C",
             user_id: userId,
         });
 
@@ -115,7 +116,7 @@ class FieldService {
     async sendControlCommand(fieldId, userId, command) {
         const field = await Field.findOne({
             where: {
-                field_id: fieldId,
+                id: fieldId,
                 user_id: userId,
             },
         });
