@@ -125,9 +125,20 @@ class MqttService {
             return;
         }
 
+        let base = Math.max(0, value.base || 0);
+        let acid = Math.max(0, value.acid || 0);
+
+        if (base >= acid) {
+            acid = 0;
+        } else {
+            base = 0;
+        }
+
         await History.create({
             field_id: fieldId,
             ...value,
+            base,
+            acid,
         });
 
         logger.info(`Watering history tersimpan untuk field_id: ${fieldId}`);
