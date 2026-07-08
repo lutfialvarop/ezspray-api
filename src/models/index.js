@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const { Sequelize } = require("sequelize");
 const dbConfig = require("../config/database");
 const logger = require("../utils/logger");
@@ -20,26 +22,22 @@ const History = require("./History")(sequelize);
 
 Field.hasMany(DetailField, {
     foreignKey: "field_id",
-    sourceKey: "id",
     as: "detail_fields",
 });
 
 DetailField.belongsTo(Field, {
     foreignKey: "field_id",
-    targetKey: "id",
-    as: "fields",
+    as: "field",
 });
 
 Field.hasMany(History, {
     foreignKey: "field_id",
-    sourceKey: "id",
-    as: "history",
+    as: "histories",
 });
 
 History.belongsTo(Field, {
     foreignKey: "field_id",
-    targetKey: "id",
-    as: "fields",
+    as: "field",
 });
 
 const syncDatabase = async () => {

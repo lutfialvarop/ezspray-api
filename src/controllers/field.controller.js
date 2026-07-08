@@ -77,7 +77,7 @@ class FieldController {
                 return response.error(res, "Field tidak ditemukan atau Anda tidak memiliki akses", 404);
             }
 
-            return response.success(res, "Detail Field berhasil diambil", Field);
+            return response.success(res, "Detail Field berhasil diambil", field);
         } catch (error) {
             logger.error("Error getFieldDetail:", error.message);
             return response.error(res, "Gagal mengambil detail Field", 500);

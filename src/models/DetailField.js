@@ -29,6 +29,10 @@ module.exports = (sequelize) => {
                 type: DataTypes.FLOAT,
                 allowNull: false,
             },
+            moisture: {
+                type: DataTypes.FLOAT,
+                allowNull: false,
+            },
             ph: {
                 type: DataTypes.FLOAT,
                 allowNull: false,

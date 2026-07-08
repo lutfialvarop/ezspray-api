@@ -16,7 +16,7 @@ const response = require("../utils/apiResponse");
 router.get("/", fieldController.getAllFields);
 router.get("/history", fieldController.getWateringHistory);
 router.post("/create", fieldController.createField);
-router.get("/detail/:pot_id", fieldController.getFieldDetail);
+router.get("/detail/:field_id", fieldController.getFieldDetail);
 router.post("/control", fieldController.sendControlCommand);
 
 module.exports = router;

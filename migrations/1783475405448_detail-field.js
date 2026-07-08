@@ -29,6 +29,10 @@ exports.up = (pgm) => {
             type: "FLOAT",
             notNull: true,
         },
+        moisture: {
+            type: "FLOAT",
+            notNull: true,
+        },
         ph: {
             type: "FLOAT",
             notNull: true,

@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const logger = require("./src/utils/logger.js");
 const app = require("./src/app.js");
 const mqttService = require("./src/services/mqtt.service");
@@ -19,14 +21,20 @@ const startServer = () => {
     }
 };
 
-process.on("SIGTERM", () => {
-    logger.error("Shutdown Server ...");
-    process.exit(0);
-});
+const gracefulShutdown = (signal) => {
+    console.log(`Melakukan shutdown...`);
 
-process.on("SIGINT", () => {
-    logger.error("Shutdown Server ...");
+    const mqttClient = mqttService.getClient();
+    if (mqttClient) {
+        mqttClient.end(true, () => {
+            console.log("Koneksi MQTT ditutup.");
+        });
+    }
+
     process.exit(0);
-});
+};
+
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 
 startServer();

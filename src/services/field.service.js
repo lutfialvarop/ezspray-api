@@ -24,10 +24,10 @@ class FieldService {
     async getWateringHistory(userId, currentDate = null) {
         const fields = await Field.findAll({
             where: { user_id: userId },
-            attributes: ["field_id"],
+            attributes: ["id"],
         });
 
-        const machineIds = fields.map((field) => Field.field_id);
+        const machineIds = fields.map((field) => Field.id);
 
         if (machineIds.length === 0) {
             return [];
@@ -58,10 +58,17 @@ class FieldService {
         }
 
         const history = await History.findAll({
-            where: {
-                field_id: { [Op.in]: machineIds },
-                ...dateFilter,
-            },
+            include: [
+                {
+                    model: Field,
+                    as: "field",
+                    where: {
+                        user_id: userId,
+                    },
+                    attributes: [],
+                },
+            ],
+            where: dateFilter,
             order: [["createdAt", "DESC"]],
         });
 
@@ -88,7 +95,7 @@ class FieldService {
     async getFieldDetail(fieldId, userId) {
         const field = await Field.findOne({
             where: {
-                field_id: fieldId,
+                id: fieldId,
                 user_id: userId,
             },
             include: [
@@ -97,13 +104,6 @@ class FieldService {
                     as: "detail_fields",
                     order: [["createdAt", "DESC"]],
                     limit: 1,
-                    separate: true,
-                },
-                {
-                    model: History,
-                    as: "histories",
-                    order: [["createdAt", "DESC"]],
-                    limit: 5,
                     separate: true,
                 },
             ],
