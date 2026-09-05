@@ -183,7 +183,9 @@ class FieldService {
         }
 
         const topic = `ezspray/${fieldId}/control`;
-        mqttService.publish(topic, JSON.stringify({ watering: "ON" }));
+        const command = { watering: "ON" };
+
+        mqttService.publish(topic, JSON.stringify(command));
 
         return {
             topic,
